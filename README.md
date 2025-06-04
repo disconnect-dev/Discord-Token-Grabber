@@ -1,52 +1,40 @@
-# Discord Token Extractor
+# 🛡️ Discord Token Extractor
 
-![rounded-image (1)](https://github.com/user-attachments/assets/482b8dcd-32b2-494e-93b3-2857cc6e9793)
+> Инструмент для извлечения, валидации и отправки Discord-токенов в виде embed-сообщений.
 
-## Features
+---
 
-- Extracts tokens from popular browsers
-- Decrypts protected tokens
-- Validates tokens against Discord API
-- Collects account metadata
-- Analyzes user servers and relationships
-- Reports results via Discord Webhook
+## 📥 Пример Embed-сообщений
 
-## Supported Browsers
+Ниже приведён пример данных, отправляемых в Discord:
+![IMG](https://github.com/user-attachments/assets/0f101e90-1124-47e6-9b3d-0dd3d2932836)
 
-- Discord (Stable, Canary, PTB)
-- Chrome
-- Edge
-- Opera/Opera GX
-- Brave
-- Yandex
+---
 
-## Requirements
+## 📋 О проекте
 
-- Python 3.6+
-- requests
-- pycryptodome
-- pywin32 (Windows only)
+Этот скрипт умеет:
 
-## Usage
+- Извлекать токены из популярных браузеров: **Chrome**, **Edge**, **Opera**, **Brave**, **Yandex**
+- Получать токены из установленных клиентов **Discord**
+- Декодировать зашифрованные токены с помощью **master key**
+- Проверять валидность токенов через **Discord API**
+- Собирать подробную информацию о пользователях: имя, ID, email, статус 2FA, Nitro, список гильдий и прочее
+- Отправлять отчёты через **Discord Webhook**
 
-1. Set your webhook URL in `Grabber.py`
-2. Run the script:
+---
 
-```python
-python main.py
-```
+## 🚀 Особенности
 
-## How It Works
+✅ Поддержка множества браузеров и Discord-клиентов  
+✅ Автоматическая проверка валидности токенов  
+✅ Эстетичные embed-сообщения  
+✅ Гибкая настройка прямо в коде  
+✅ Простота интеграции с Webhook  
 
-The extractor scans browser storage files for tokens using regex patterns, decrypts them when necessary, validates them against Discord's API, and collects account metadata for reporting.
+---
 
-## Disclaimer
+## ⚠️ Предупреждение
 
-This tool is for educational purposes only. Unauthorized use violates Discord's Terms of Service and may be illegal. Use only on your own accounts or with explicit permission.
-
-## Security Tips
-
-- Enable 2FA on your Discord account
-- Regularly check active sessions
-- Use strong passwords
-- Be cautious with browser extensions
+> ❗ Этот скрипт предоставлен **исключительно в образовательных целях**.  
+> 🚫 Любое использование для вредоносных действий — нарушение [ToS Discord](https://discord.com/terms) и законодательства.
